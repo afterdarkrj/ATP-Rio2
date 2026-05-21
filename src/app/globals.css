@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* ── Força escaneamento de todos os arquivos fonte ── */
+@source "../../**/*.{tsx,ts,jsx,js,html}";
+
+/* ── Tailwind v4: registra fonte como utility font-poppins ── */
+@theme {
+  --font-poppins: "Poppins", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ── Variáveis de cor do tema ── */
 :root {
   --green-900: #1f3d24;
   --green-700: #2f6b3a;
@@ -16,23 +25,36 @@
   --line:      #e3ebdd;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: "Inter", system-ui, sans-serif;
-  color: var(--ink);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+/* ── Base: DENTRO do @layer para não anular utilities ── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
 }
 
-/* ---- Logo ball ---- */
+/* ══════════════════════════════════════════════════
+   Classes customizadas (fora de @layer → prioridade
+   sobre utilities Tailwind só quando necessário)
+   ══════════════════════════════════════════════════ */
+
+/* ── Logo ball (CSS puro) ── */
 .logo-ball {
   width: 26px; height: 26px; border-radius: 50%;
   background: radial-gradient(circle at 32% 30%, #f2ff7a, #dff24a 60%, #b9d426);
   position: relative;
   box-shadow: inset -3px -4px 6px rgba(0,0,0,.12);
   flex-shrink: 0;
+  display: inline-block;
 }
 .logo-ball::before, .logo-ball::after {
   content: ""; position: absolute; inset: 0;
@@ -41,7 +63,7 @@ body {
 .logo-ball::before { clip-path: inset(0 50% 0 0); transform: scaleX(1.7) translateX(-22%); }
 .logo-ball::after  { clip-path: inset(0 0 0 50%); transform: scaleX(1.7) translateX(22%); }
 
-/* ---- Floating ball ---- */
+/* ── Floating balls ── */
 .float-ball {
   position: absolute; border-radius: 50%;
   background: radial-gradient(circle at 32% 30%, #f2ff7a, #dff24a 60%, #b9d426);
@@ -54,7 +76,7 @@ body {
 .float-ball::before { clip-path: inset(0 50% 0 0); transform: scaleX(1.7) translateX(-22%); }
 .float-ball::after  { clip-path: inset(0 0 0 50%); transform: scaleX(1.7) translateX(22%); }
 
-/* ---- Animations ---- */
+/* ── Animações ── */
 @keyframes spinFloat {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50%      { transform: translateY(-26px) rotate(180deg); }
@@ -63,8 +85,8 @@ body {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-14px); }
 }
-@keyframes pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(69,163,90,.55); }
+@keyframes pulseDot {
+  0%   { box-shadow: 0 0 0 0 rgba(69,163,90,.6); }
   100% { box-shadow: 0 0 0 9px rgba(69,163,90,0); }
 }
 @keyframes fadeUp {
@@ -76,10 +98,15 @@ body {
 .animate-float-1     { animation: spinFloat 9s ease-in-out infinite; }
 .animate-float-2     { animation: spinFloat 7s ease-in-out infinite reverse; }
 .animate-float-3     { animation: spinFloat 11s ease-in-out infinite; }
-.animate-pulse-dot   { animation: pulse 1.6s infinite; }
+.animate-pulse-dot   { animation: pulseDot 1.6s infinite; }
 .animate-fade-up     { animation: fadeUp .7s cubic-bezier(.2,.7,.2,1) both; }
 
-/* ---- Court lines ---- */
+@media (prefers-reduced-motion: reduce) {
+  .animate-card-float, .animate-float-1, .animate-float-2,
+  .animate-float-3, .animate-pulse-dot, .animate-fade-up { animation: none !important; }
+}
+
+/* ── Court lines ── */
 .court-lines {
   position: absolute; inset: 0; pointer-events: none; opacity: .35;
   background:
@@ -87,7 +114,7 @@ body {
     repeating-linear-gradient(90deg, transparent 0 calc(20% - 3px), rgba(255,255,255,.55) calc(20% - 3px) 20%);
 }
 
-/* ---- Feature card accent line ---- */
+/* ── Feature card accent ── */
 .feature-card { position: relative; overflow: hidden; }
 .feature-card::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
@@ -97,7 +124,7 @@ body {
 }
 .feature-card:hover::before { transform: scaleX(1); }
 
-/* ---- Check list item ---- */
+/* ── Check list item ── */
 .check-item { position: relative; padding-left: 34px; font-weight: 500; }
 .check-item::before {
   content: "✓"; position: absolute; left: 0; top: 0;
@@ -106,12 +133,6 @@ body {
   background: #45a35a; border-radius: 50%;
 }
 
-/* ---- Rank row ---- */
+/* ── Rank row hover ── */
 .rank-row { transition: transform .2s ease; }
 .rank-row:hover { transform: translateX(5px); }
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-card-float, .animate-float-1, .animate-float-2,
-  .animate-float-3, .animate-pulse-dot, .animate-fade-up { animation: none; }
-  html { scroll-behavior: auto; }
-}
