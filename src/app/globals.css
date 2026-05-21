@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+:root {
+  --green-900: #1f3d24;
+  --green-700: #2f6b3a;
+  --green-500: #45a35a;
+  --lime:      #c8e84a;
+  --lime-soft: #e7f6a8;
+  --ball:      #dff24a;
+  --clay:      #e07a3f;
+  --clay-soft: #f6d9c6;
+  --bg:        #f5f9f0;
+  --bg-soft:   #ffffff;
+  --ink:       #1d2b1f;
+  --muted:     #5d6e5b;
+  --line:      #e3ebdd;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ---- Logo ball ---- */
+.logo-ball {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #f2ff7a, #dff24a 60%, #b9d426);
+  position: relative;
+  box-shadow: inset -3px -4px 6px rgba(0,0,0,.12);
+  flex-shrink: 0;
+}
+.logo-ball::before, .logo-ball::after {
+  content: ""; position: absolute; inset: 0;
+  border-radius: 50%; border: 2px solid #fff;
+}
+.logo-ball::before { clip-path: inset(0 50% 0 0); transform: scaleX(1.7) translateX(-22%); }
+.logo-ball::after  { clip-path: inset(0 0 0 50%); transform: scaleX(1.7) translateX(22%); }
+
+/* ---- Floating ball ---- */
+.float-ball {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #f2ff7a, #dff24a 60%, #b9d426);
+  box-shadow: inset -6px -8px 12px rgba(0,0,0,.12), 0 14px 36px rgba(31,61,36,.12);
+}
+.float-ball::before, .float-ball::after {
+  content: ""; position: absolute; inset: 0;
+  border-radius: 50%; border: 2px solid rgba(255,255,255,.85);
+}
+.float-ball::before { clip-path: inset(0 50% 0 0); transform: scaleX(1.7) translateX(-22%); }
+.float-ball::after  { clip-path: inset(0 0 0 50%); transform: scaleX(1.7) translateX(22%); }
+
+/* ---- Animations ---- */
+@keyframes spinFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-26px) rotate(180deg); }
+}
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(69,163,90,.55); }
+  100% { box-shadow: 0 0 0 9px rgba(69,163,90,0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-card-float  { animation: cardFloat 6s ease-in-out infinite; }
+.animate-float-1     { animation: spinFloat 9s ease-in-out infinite; }
+.animate-float-2     { animation: spinFloat 7s ease-in-out infinite reverse; }
+.animate-float-3     { animation: spinFloat 11s ease-in-out infinite; }
+.animate-pulse-dot   { animation: pulse 1.6s infinite; }
+.animate-fade-up     { animation: fadeUp .7s cubic-bezier(.2,.7,.2,1) both; }
+
+/* ---- Court lines ---- */
+.court-lines {
+  position: absolute; inset: 0; pointer-events: none; opacity: .35;
+  background:
+    linear-gradient(transparent 0, transparent calc(100% - 3px), rgba(255,255,255,.7) calc(100% - 3px)),
+    repeating-linear-gradient(90deg, transparent 0 calc(20% - 3px), rgba(255,255,255,.55) calc(20% - 3px) 20%);
+}
+
+/* ---- Feature card accent line ---- */
+.feature-card { position: relative; overflow: hidden; }
+.feature-card::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #c8e84a, #45a35a);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .3s ease;
+}
+.feature-card:hover::before { transform: scaleX(1); }
+
+/* ---- Check list item ---- */
+.check-item { position: relative; padding-left: 34px; font-weight: 500; }
+.check-item::before {
+  content: "✓"; position: absolute; left: 0; top: 0;
+  width: 24px; height: 24px; display: grid; place-items: center;
+  font-size: .8rem; font-weight: 800; color: #fff;
+  background: #45a35a; border-radius: 50%;
+}
+
+/* ---- Rank row ---- */
+.rank-row { transition: transform .2s ease; }
+.rank-row:hover { transform: translateX(5px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-card-float, .animate-float-1, .animate-float-2,
+  .animate-float-3, .animate-pulse-dot, .animate-fade-up { animation: none; }
+  html { scroll-behavior: auto; }
+}
