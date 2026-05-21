@@ -4,10 +4,10 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getBrowserSupabase } from '@/lib/supabase-browser'
 
-function toE164(raw: string): string {
+function phoneToEmail(raw: string): string {
   const digits = raw.replace(/\D/g, '')
-  if (digits.startsWith('55') && digits.length >= 12) return `+${digits}`
-  return `+55${digits}`
+  const full = digits.startsWith('55') && digits.length >= 12 ? digits : `55${digits}`
+  return `${full}@atprio2.app`
 }
 
 export default function LoginPage() {
@@ -24,7 +24,7 @@ export default function LoginPage() {
     try {
       const supabase = getBrowserSupabase()
       const { error: authError } = await supabase.auth.signInWithPassword({
-        phone: toE164(phone),
+        email: phoneToEmail(phone),
         password,
       })
       if (authError) {
