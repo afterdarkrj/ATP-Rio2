@@ -130,7 +130,7 @@ export default function Home() {
             ))}
             <a href="#cta" className="px-5 py-2.5 rounded-full text-white font-semibold text-sm shadow-lg hover:-translate-y-0.5 transition-transform"
               style={{ background: 'linear-gradient(135deg, #45a35a, #2f6b3a)' }}>
-              Entrar na quadra
+              Login
             </a>
           </nav>
 
@@ -155,7 +155,7 @@ export default function Home() {
             ))}
             <a href="#cta" onClick={() => setMenuOpen(false)} className="mt-2 py-3 text-center rounded-full text-white font-semibold"
               style={{ background: 'linear-gradient(135deg, #45a35a, #2f6b3a)' }}>
-              Entrar na quadra
+              Login
             </a>
           </div>
         )}
