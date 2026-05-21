@@ -128,6 +128,10 @@ export default function Home() {
             {[['#features','Recursos'],['#how','Como funciona'],['#ranking','Ranking']].map(([h,l]) => (
               <a key={h} href={h} className="font-medium transition-colors hover:text-[#45a35a]" style={{ color: 'var(--ink)' }}>{l}</a>
             ))}
+            <a href="/login" className="px-5 py-2.5 rounded-full font-semibold text-sm border-2 hover:-translate-y-0.5 transition-transform"
+              style={{ borderColor: 'var(--green-500)', color: 'var(--green-700)', background: 'transparent' }}>
+              Login
+            </a>
             <a href="#cta" className="px-5 py-2.5 rounded-full text-white font-semibold text-sm shadow-lg hover:-translate-y-0.5 transition-transform"
               style={{ background: 'linear-gradient(135deg, #45a35a, #2f6b3a)' }}>
               Entrar na quadra
@@ -153,7 +157,11 @@ export default function Home() {
             {[['#features','Recursos'],['#how','Como funciona'],['#ranking','Ranking']].map(([h,l]) => (
               <a key={h} href={h} onClick={() => setMenuOpen(false)} className="py-3 border-b font-medium" style={{ borderColor: 'var(--line)', color: 'var(--ink)' }}>{l}</a>
             ))}
-            <a href="#cta" onClick={() => setMenuOpen(false)} className="mt-2 py-3 text-center rounded-full text-white font-semibold"
+            <a href="/login" onClick={() => setMenuOpen(false)} className="mt-2 py-3 text-center rounded-full font-semibold border-2"
+              style={{ borderColor: 'var(--green-500)', color: 'var(--green-700)' }}>
+              Login
+            </a>
+            <a href="#cta" onClick={() => setMenuOpen(false)} className="py-3 text-center rounded-full text-white font-semibold"
               style={{ background: 'linear-gradient(135deg, #45a35a, #2f6b3a)' }}>
               Entrar na quadra
             </a>
