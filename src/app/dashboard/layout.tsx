@@ -34,7 +34,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const { data } = await supabase
         .from('jogadores')
         .select('*')
-        .eq('email', session.user.email)
+        .eq('id', session.user.id)
         .single()
 
       setJogador(data)
