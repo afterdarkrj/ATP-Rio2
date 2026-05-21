@@ -9,6 +9,7 @@ const NAV_JOGADOR = [
   { href: '/dashboard/ranking',   icon: '📊', label: 'Meu Ranking' },
   { href: '/dashboard/partidas',  icon: '🎾', label: 'Minhas Partidas' },
   { href: '/dashboard/historico', icon: '📈', label: 'Histórico' },
+  { href: '/dashboard/perfil',    icon: '👤', label: 'Meu Perfil' },
 ]
 
 const NAV_ADMIN = [
