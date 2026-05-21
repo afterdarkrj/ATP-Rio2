@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { getBrowserSupabase, type Jogador } from '@/lib/supabase-browser'
+import { JogadorContext } from '@/lib/jogador-context'
 
 const NAV_JOGADOR = [
   { href: '/dashboard',           icon: '🏠', label: 'Painel' },
@@ -178,7 +179,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <main className="flex-1 p-6 md:p-8">
-          {children}
+          <JogadorContext.Provider value={{ jogador, setJogador }}>
+            {children}
+          </JogadorContext.Provider>
         </main>
       </div>
     </div>

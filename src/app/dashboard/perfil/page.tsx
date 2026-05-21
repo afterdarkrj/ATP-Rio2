@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { getBrowserSupabase } from '@/lib/supabase-browser'
+import { useJogador } from '@/lib/jogador-context'
 
 type FormData = {
   nome: string
@@ -11,30 +12,27 @@ type FormData = {
 }
 
 export default function PerfilPage() {
-  const [form, setForm]       = useState<FormData>({ nome: '', condominio: '', apartamento: '', whatsapp: '' })
-  const [userId, setUserId]   = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving]   = useState(false)
-  const [status, setStatus]   = useState<{ type: 'idle' | 'ok' | 'err'; msg: string }>({ type: 'idle', msg: '' })
+  const { jogador, setJogador } = useJogador()
+
+  const [form, setForm]     = useState<FormData>({
+    nome:        jogador?.nome        ?? '',
+    condominio:  jogador?.condominio  ?? '',
+    apartamento: jogador?.apartamento ?? '',
+    whatsapp:    jogador?.whatsapp    ?? '',
+  })
+  const [saving, setSaving] = useState(false)
+  const [status, setStatus] = useState<{ type: 'idle' | 'ok' | 'err'; msg: string }>({ type: 'idle', msg: '' })
 
   useEffect(() => {
-    const load = async () => {
-      const supabase = getBrowserSupabase()
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
-      setUserId(session.user.id)
-
-      const { data } = await supabase
-        .from('jogadores')
-        .select('nome, condominio, apartamento, whatsapp')
-        .eq('id', session.user.id)
-        .single()
-
-      if (data) setForm(data)
-      setLoading(false)
+    if (jogador) {
+      setForm({
+        nome:        jogador.nome,
+        condominio:  jogador.condominio,
+        apartamento: jogador.apartamento,
+        whatsapp:    jogador.whatsapp,
+      })
     }
-    load()
-  }, [])
+  }, [jogador])
 
   const field = (key: keyof FormData) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,16 +47,17 @@ export default function PerfilPage() {
       setStatus({ type: 'err', msg: 'Preencha todos os campos.' })
       return
     }
-    if (!userId) return
+    if (!jogador) return
     setSaving(true)
     const { error } = await getBrowserSupabase()
       .from('jogadores')
       .update({ nome, condominio, apartamento, whatsapp })
-      .eq('id', userId)
+      .eq('id', jogador.id)
 
     if (error) {
       setStatus({ type: 'err', msg: 'Erro ao salvar. Tente novamente.' })
     } else {
+      setJogador({ ...jogador, nome, condominio, apartamento, whatsapp })
       setStatus({ type: 'ok', msg: 'Dados atualizados com sucesso!' })
     }
     setSaving(false)
@@ -75,85 +74,81 @@ export default function PerfilPage() {
         <p style={{ color: 'var(--muted)' }}>Atualize seus dados cadastrais a qualquer momento.</p>
       </div>
 
-      {loading ? (
-        <p style={{ color: 'var(--muted)' }}>Carregando...</p>
-      ) : (
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border p-6 flex flex-col gap-4"
-          style={{ borderColor: 'var(--line)' }}>
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border p-6 flex flex-col gap-4"
+        style={{ borderColor: 'var(--line)' }}>
 
+        <div>
+          <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+            Nome completo
+          </label>
+          <input
+            className={inputCls}
+            style={{ borderColor: 'var(--line)' }}
+            value={form.nome}
+            onChange={field('nome')}
+            placeholder="Seu nome completo"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-              Nome completo
+              Condomínio
             </label>
             <input
               className={inputCls}
               style={{ borderColor: 'var(--line)' }}
-              value={form.nome}
-              onChange={field('nome')}
-              placeholder="Seu nome completo"
+              value={form.condominio}
+              onChange={field('condominio')}
+              placeholder="Ex: Front Lake"
             />
           </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-                Condomínio
-              </label>
-              <input
-                className={inputCls}
-                style={{ borderColor: 'var(--line)' }}
-                value={form.condominio}
-                onChange={field('condominio')}
-                placeholder="Ex: Front Lake"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-                Apartamento
-              </label>
-              <input
-                className={inputCls}
-                style={{ borderColor: 'var(--line)' }}
-                value={form.apartamento}
-                onChange={field('apartamento')}
-                placeholder="Ex: 101"
-              />
-            </div>
-          </div>
-
           <div>
             <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-              WhatsApp (com DDD)
+              Apartamento
             </label>
             <input
-              type="tel"
               className={inputCls}
               style={{ borderColor: 'var(--line)' }}
-              value={form.whatsapp}
-              onChange={field('whatsapp')}
-              placeholder="Ex: 21999999999"
+              value={form.apartamento}
+              onChange={field('apartamento')}
+              placeholder="Ex: 101"
             />
           </div>
+        </div>
 
-          {status.msg && (
-            <p className="text-sm font-medium px-3 py-2 rounded-lg"
-              style={{
-                color: status.type === 'ok' ? 'var(--green-700)' : '#c0392b',
-                background: status.type === 'ok' ? 'var(--lime-soft)' : '#fff0ec',
-              }}>
-              {status.type === 'ok' ? '✓ ' : '⚠ '}{status.msg}
-            </p>
-          )}
+        <div>
+          <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+            WhatsApp (com DDD)
+          </label>
+          <input
+            type="tel"
+            className={inputCls}
+            style={{ borderColor: 'var(--line)' }}
+            value={form.whatsapp}
+            onChange={field('whatsapp')}
+            placeholder="Ex: 21999999999"
+          />
+        </div>
 
-          <button
-            type="submit"
-            disabled={saving}
-            className="mt-1 py-3 rounded-xl text-white font-poppins font-semibold text-sm transition-all hover:-translate-y-0.5 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, #45a35a, #2f6b3a)' }}>
-            {saving ? 'Salvando...' : 'Salvar alterações'}
-          </button>
-        </form>
-      )}
+        {status.msg && (
+          <p className="text-sm font-medium px-3 py-2 rounded-lg"
+            style={{
+              color:      status.type === 'ok' ? 'var(--green-700)' : '#c0392b',
+              background: status.type === 'ok' ? 'var(--lime-soft)' : '#fff0ec',
+            }}>
+            {status.type === 'ok' ? '✓ ' : '⚠ '}{status.msg}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={saving}
+          className="mt-1 py-3 rounded-xl text-white font-poppins font-semibold text-sm transition-all hover:-translate-y-0.5 disabled:opacity-50"
+          style={{ background: 'linear-gradient(135deg, #45a35a, #2f6b3a)' }}>
+          {saving ? 'Salvando...' : 'Salvar alterações'}
+        </button>
+      </form>
     </div>
   )
 }
