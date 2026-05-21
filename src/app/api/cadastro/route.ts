@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 
 export async function POST(request: Request) {
   try {
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const { error } = await supabase
+    const { error } = await getSupabase()
       .from('cadastros')
       .insert([{ nome, condominio, apartamento, email, whatsapp }])
 
