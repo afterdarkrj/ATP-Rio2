@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     }
 
     const { error } = await getSupabase()
-      .from('cadastros')
+      .from('jogadores')
       .insert([{ nome, condominio, apartamento, email, whatsapp }])
 
     if (error) {
