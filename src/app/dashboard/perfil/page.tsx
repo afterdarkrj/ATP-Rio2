@@ -119,6 +119,20 @@ export default function PerfilPage() {
 
         <div>
           <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+            E-mail
+          </label>
+          <input
+            type="email"
+            className={inputCls}
+            style={{ borderColor: 'var(--line)', background: 'var(--bg)', color: 'var(--muted)', cursor: 'not-allowed' }}
+            value={jogador?.email ?? ''}
+            disabled
+            readOnly
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
             WhatsApp (com DDD)
           </label>
           <input

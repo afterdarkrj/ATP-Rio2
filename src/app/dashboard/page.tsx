@@ -11,7 +11,7 @@ export default function DashboardPage() {
       const supabase = getBrowserSupabase()
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
-      const { data } = await supabase.from('jogadores').select('*').eq('email', session.user.email).single()
+      const { data } = await supabase.from('jogadores').select('*').eq('id', session.user.id).single()
       setJogador(data)
     }
     load()

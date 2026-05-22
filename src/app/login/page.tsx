@@ -4,15 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getBrowserSupabase } from '@/lib/supabase-browser'
 
-function phoneToEmail(raw: string): string {
-  const digits = raw.replace(/\D/g, '')
-  const full = digits.startsWith('55') && digits.length >= 12 ? digits : `55${digits}`
-  return `${full}@atprio2.app`
-}
-
 export default function LoginPage() {
   const router = useRouter()
-  const [phone, setPhone]       = useState('')
+  const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading]   = useState(false)
   const [error, setError]       = useState('')
@@ -24,11 +18,11 @@ export default function LoginPage() {
     try {
       const supabase = getBrowserSupabase()
       const { error: authError } = await supabase.auth.signInWithPassword({
-        email: phoneToEmail(phone),
+        email,
         password,
       })
       if (authError) {
-        setError('Telefone ou senha inválidos. Verifique seus dados.')
+        setError('E-mail ou senha inválidos. Verifique seus dados.')
         return
       }
       router.push('/dashboard')
@@ -65,17 +59,17 @@ export default function LoginPage() {
             Bem-vindo de volta!
           </h1>
           <p className="text-sm mb-7" style={{ color: 'var(--muted)' }}>
-            Entre com seu telefone e senha para acessar a plataforma.
+            Entre com seu e-mail e senha para acessar a plataforma.
           </p>
 
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--ink)' }}>Telefone (WhatsApp)</label>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--ink)' }}>E-mail</label>
               <input
-                type="tel"
-                placeholder="(21) 99999-9999"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
+                type="email"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 className={inputCls}
                 style={{ borderColor: 'var(--line)' }}
                 required

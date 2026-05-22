@@ -65,7 +65,7 @@ const inputCls = 'w-full px-5 py-4 rounded-2xl border-2 border-transparent bg-wh
 export default function Home() {
   const [scrolled, setScrolled]   = useState(false)
   const [menuOpen, setMenuOpen]   = useState(false)
-  const [form, setForm]           = useState({ nome: '', condominio: '', apartamento: '', email: '', whatsapp: '' })
+  const [form, setForm]           = useState({ nome: '', condominio: '', apartamento: '', email: '', whatsapp: '', password: '' })
   const [submitting, setSubmitting] = useState(false)
   const [status, setStatus]       = useState<{ type: 'idle' | 'ok' | 'err'; msg: string }>({
     type: 'idle', msg: 'Cadastro gratuito · exclusivo para moradores',
@@ -82,8 +82,8 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const { nome, condominio, apartamento, email, whatsapp } = form
-    if (!nome || !condominio || !apartamento || !email || !whatsapp) {
+    const { nome, condominio, apartamento, email, whatsapp, password } = form
+    if (!nome || !condominio || !apartamento || !email || !whatsapp || !password) {
       setStatus({ type: 'err', msg: 'Preencha todos os campos para continuar.' })
       return
     }
@@ -94,7 +94,7 @@ export default function Home() {
       if (!res.ok) setStatus({ type: 'err', msg: data.error || 'Erro ao cadastrar.' })
       else {
         setStatus({ type: 'ok', msg: `Tudo certo, ${nome.split(' ')[0]}! Cadastro enviado. Bem-vindo(a) ao ATP-Rio2 🎾` })
-        setForm({ nome: '', condominio: '', apartamento: '', email: '', whatsapp: '' })
+        setForm({ nome: '', condominio: '', apartamento: '', email: '', whatsapp: '', password: '' })
       }
     } catch {
       setStatus({ type: 'err', msg: 'Erro de conexão. Tente novamente.' })
@@ -382,6 +382,8 @@ export default function Home() {
               value={form.email}       onChange={field('email')} />
             <input type="tel"   className={inputCls} placeholder="WhatsApp (com DDD)"
               value={form.whatsapp}    onChange={field('whatsapp')} />
+            <input type="password" className={inputCls} placeholder="Senha (min. 6 caracteres)"
+              value={form.password}  onChange={field('password')} />
             <button type="submit" disabled={submitting}
               className="col-span-2 mt-1 py-4 rounded-full text-white font-poppins font-semibold text-lg shadow-xl hover:-translate-y-1 active:translate-y-0 transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ background:'linear-gradient(135deg,#45a35a,#2f6b3a)' }}>
